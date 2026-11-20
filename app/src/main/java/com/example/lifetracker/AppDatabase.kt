@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 // Główna klasa bazy. version = 1 (przy zmianie struktury tabel trzeba ją zwiększyć).
-@Database(entities = [TaskEntity::class], version = 1, exportSchema = false)
+@Database(entities = [TaskEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao
@@ -23,7 +23,11 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "lifetracker_database" // nazwa pliku bazy w telefonie
-                ).build()
+                )
+                    // Zmieniła się struktura tabeli (nowe kolumny). Najprościej: przy zmianie wersji
+                    // baza jest tworzona od nowa (stare testowe zadania znikną jednorazowo).
+                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .build()
                 INSTANCE = instance
                 instance
             }

@@ -88,19 +88,19 @@ fun MainScreen() {
             composable("trening") {
                 PlaceholderScreen(
                     Icons.Default.FitnessCenter, "Trening",
-                    "Moduł treningowy – w przygotowaniu na Checkpoint 2"
+                    "Moduł treningowy"
                 )
             }
             composable("dieta") {
                 PlaceholderScreen(
                     Icons.Default.Restaurant, "Dieta",
-                    "Moduł diety i nawodnienia – w przygotowaniu na Checkpoint 2"
+                    "Moduł diety i nawodnienia"
                 )
             }
             composable("statystyki") {
                 PlaceholderScreen(
                     Icons.Default.BarChart, "Statystyki",
-                    "Statystyki i system passy (Streaks) – w przygotowaniu na Checkpoint 2"
+                    "Statystyki i system passy (Streaks)"
                 )
             }
         }
