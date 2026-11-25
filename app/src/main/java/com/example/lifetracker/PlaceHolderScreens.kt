@@ -17,9 +17,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-// Jeden wspólny ekran-zaślepka dla zakładek, które powstaną w Checkpoincie 2
+// Jeden wspólny, prosty ekran dla zakładek, które będą rozbudowane w Checkpoincie 2
+// (Trening, Dieta, Statystyki). Zamiast pisać 3 prawie takie same ekrany,
+// piszemy jeden i podajemy mu tylko inną ikonkę, tytuł i opis.
 @Composable
 fun PlaceholderScreen(icon: ImageVector, title: String, message: String) {
+    // Box z contentAlignment = Center ustawia kartę na środku ekranu.
     Box(
         modifier = Modifier
             .fillMaxSize()
