@@ -259,8 +259,6 @@ fun PlannerScreen(viewModel: TaskViewModel = viewModel()) {
         }
     }
 
-    // ----- Okienka. Każde rysuje się tylko wtedy, gdy jego zmienna mówi "pokaż". -----
-
     // Dodawanie nowego zadania.
     if (showAddDialog) {
         TaskDialog(
@@ -312,7 +310,7 @@ fun PlannerScreen(viewModel: TaskViewModel = viewModel()) {
         )
     }
 
-    // Ustawianie dziennego celu punktów (ołówek na karcie bilansu).
+    // Ustawianie dziennego celu punktów
     if (showGoalDialog) {
         GoalDialog(
             currentGoal = viewModel.dailyGoal,
@@ -370,9 +368,7 @@ fun Header(showTodayButton: Boolean, onTodayClick: () -> Unit) {
     }
 }
 
-// ====================================================================
 //  WIERSZ Z DATĄ:  <   środa, 25.11.2026   >
-// ====================================================================
 @Composable
 fun DateNavigator(label: String, onPrevious: () -> Unit, onNext: () -> Unit, onPick: () -> Unit) {
     Row(
@@ -394,10 +390,7 @@ fun DateNavigator(label: String, onPrevious: () -> Unit, onNext: () -> Unit, onP
     }
 }
 
-// ====================================================================
 //  KALENDARZ (okienko z wyborem daty)
-// ====================================================================
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarDialog(initialDate: LocalDate, onDismiss: () -> Unit, onDateSelected: (LocalDate) -> Unit) {
     // Kalendarz z Material 3 liczy daty w milisekundach (od 1970 roku, strefa UTC),
@@ -423,13 +416,11 @@ fun CalendarDialog(initialDate: LocalDate, onDismiss: () -> Unit, onDateSelected
     }
 }
 
-// ====================================================================
 //  KARTA "BILANS" – punkty względem celu + pasek postępu
-// ====================================================================
-// points      – ile punktów zdobyto w oglądanym okresie (razem)
-// goal        – cel na ten okres (dzień = cel dzienny, tydzień = 7 x, miesiąc = 30 x, rok = 365 x)
+// points - ile punktów zdobyto w oglądanym okresie (razem)
+// goal – cel na ten okres (dzień = cel dzienny, tydzień = 7 x, miesiąc = 30 x, rok = 365 x)
 // dailyPoints – część punktów z zadań dziennych, goalsPoints – część z celów okresu
-// done / all  – ile pozycji z listy poniżej jest odhaczonych
+// done / all – ile pozycji z listy poniżej jest odhaczonych
 @Composable
 fun SummaryCard(
     period: String,
@@ -488,7 +479,6 @@ fun SummaryCard(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            // Pasek postępu. Podajemy go jako { progress }, bo tak chce nowa wersja Material 3.
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier
@@ -525,9 +515,7 @@ fun SummaryCard(
     }
 }
 
-// ====================================================================
 //  OKIENKO "DZIENNY CEL PUNKTÓW"
-// ====================================================================
 @Composable
 fun GoalDialog(currentGoal: Int, onDismiss: () -> Unit, onSave: (Int) -> Unit) {
     // Pole tekstowe startuje od obecnego celu (np. "100").
