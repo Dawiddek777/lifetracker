@@ -574,7 +574,7 @@ fun TaskCard(
     onClick: () -> Unit,
     onDelete: () -> Unit
 ) {
-    // Card z onClick = cała karta jest klikalna (kliknięcie otwiera edycję).
+    // Card z onClick = cała karta jest klikalna do edycji
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -582,9 +582,7 @@ fun TaskCard(
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Checkbox w kolorze kategorii.
-            // Droga kliknięcia: onToggle -> ViewModel -> zapis w bazie -> Flow wysyła nową listę
-            // -> ekran się przerysowuje (i licznik punktów na górze też).
+            // Checkbox w kolorze kategorii
             Checkbox(
                 checked = done,
                 onCheckedChange = { onToggle() },
@@ -603,7 +601,6 @@ fun TaskCard(
                         MaterialTheme.colorScheme.onSurface
                 )
 
-                // Kolorowa "plakietka" kategorii z ikonką.
                 CategoryLabel(category)
 
                 // Godzina i powtarzanie – pokazujemy tylko to, co jest ustawione.
@@ -646,7 +643,7 @@ fun TaskCard(
     }
 }
 
-// Mała kolorowa plakietka kategorii, np. [🏋 Trening] na czerwonawym tle.
+// Mała kolorowa plakietka kategorii
 @Composable
 fun CategoryLabel(category: Category) {
     Surface(
@@ -666,7 +663,7 @@ fun CategoryLabel(category: Category) {
     }
 }
 
-// Mała szara ikonka + tekst (np. zegar + "16:30").
+// Mała szara ikonka + tekst
 @Composable
 fun SmallInfo(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String) {
     Icon(
@@ -683,12 +680,10 @@ fun SmallInfo(icon: androidx.compose.ui.graphics.vector.ImageVector, text: Strin
     )
 }
 
-// ====================================================================
 //  OKIENKO DODAWANIA / EDYCJI ZADANIA
-// ====================================================================
-// existingTask = null    -> dodajemy nowe zadanie (puste pola)
+// existingTask = null-> dodajemy nowe zadanie (puste pola)
 // existingTask = zadanie -> edytujemy je (pola wypełnione jego danymi)
-// categoryList           -> wszystkie kategorie (wbudowane + własne z bazy)
+// categoryList-> wszystkie kategorie (wbudowane + własne z bazy)
 // onAddCategory / onDeleteCategory -> co zrobić po dodaniu / usunięciu własnej kategorii
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -722,14 +717,14 @@ fun TaskDialog(
                 (1..7).toSet()
         )
     }
-    var showTimeInput by remember { mutableStateOf(false) }                       // okienko z godziną
-    var showAddCategory by remember { mutableStateOf(false) }                     // okienko "Nowa kategoria"
-    var categoryToDelete by remember { mutableStateOf<Category?>(null) }          // pytanie "usunąć kategorię?"
+    var showTimeInput by remember { mutableStateOf(false) } // okienko z godziną
+    var showAddCategory by remember { mutableStateOf(false) } // okienko "Nowa kategoria"
+    var categoryToDelete by remember { mutableStateOf<Category?>(null) } // pytanie "usunąć kategorię?"
 
     // Tekst z pola "Punkty" zamieniamy na liczbę. Jak się nie da (np. puste pole) – wychodzi null.
     val points = pointsText.toIntOrNull()
 
-    // Czy można zapisać? Musi być nazwa, punkty > 0, a przy powtarzaniu codziennym – choć jeden dzień.
+    // Walidacja pol
     val canSave = title.isNotBlank() && points != null && points > 0 &&
             !(isRepeating && period == "DZIEN" && selectedDays.isEmpty())
 
