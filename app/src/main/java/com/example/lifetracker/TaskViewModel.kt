@@ -18,14 +18,9 @@ import java.time.LocalDate
 // Ważna zaleta: ViewModel nie znika przy obrocie telefonu, więc nie tracimy wybranej daty.
 // AndroidViewModel (a nie zwykły ViewModel), bo potrzebujemy "application", żeby otworzyć bazę.
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
-
-    // Nasz dostęp do bazy (listy poleceń z TaskDao i CategoryDao).
     private val dao = AppDatabase.getDatabase(application).taskDao()
     private val categoryDao = AppDatabase.getDatabase(application).categoryDao()
 
-    // SharedPreferences to malutki "notesik" w telefonie na proste ustawienia (klucz -> wartość).
-    // Na jedną liczbę (cel dzienny) nie ma sensu robić całej tabeli w bazie.
-    // Notesik też zostaje po zamknięciu aplikacji.
     private val prefs = application.getSharedPreferences("lifetracker_settings", Context.MODE_PRIVATE)
 
     // Dzienny cel punktów. Czytamy go z notesika; jak jeszcze go nie ma – bierzemy 100.
@@ -33,7 +28,6 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     var dailyGoal by mutableStateOf(prefs.getInt("daily_goal", 100))
         private set
 
-    // Zmiana celu: zapisujemy nową wartość w zmiennej (ekran się odświeży) i w notesiku (na później).
     fun changeDailyGoal(value: Int) {
         dailyGoal = value
         prefs.edit().putInt("daily_goal", value).apply()

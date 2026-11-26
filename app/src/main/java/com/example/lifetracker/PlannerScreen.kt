@@ -138,7 +138,6 @@ fun PlannerScreen(viewModel: TaskViewModel = viewModel()) {
 
     // Z wszystkich zadań zostawiamy tylko te, które pasują do oglądanego dnia/okresu,
     // i układamy je wg godziny. Zadania bez godziny lądują na końcu listy.
-    // (Godziny mają format "08:00", "18:30", więc zwykłe porównanie tekstów układa je dobrze.)
     val tasks = allTasks
         .filter { isVisible(it, date, period) }
         .sortedWith(compareBy({ it.time.isEmpty() }, { it.time }))

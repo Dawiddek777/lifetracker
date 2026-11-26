@@ -2,7 +2,6 @@ package com.example.lifetracker
 
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -168,13 +167,6 @@ fun thisPeriodText(period: String): String {
     }
 }
 
-// Powitanie zależne od godziny w telefonie.
 fun greeting(): String {
-    val hour = LocalTime.now().hour
-    return when (hour) {
-        in 5..11 -> "Dzień dobry!"
-        in 12..17 -> "Miłego popołudnia!"
-        in 18..21 -> "Dobry wieczór!"
-        else -> "Dobranoc!"
-    }
+    return "Cześć!"
 }
