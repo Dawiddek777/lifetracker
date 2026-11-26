@@ -164,16 +164,11 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Zadanie powtarzalne: "usuń tylko od tego dnia".
-    // Ustawiamy datę końca – od niej w przód zadanie przestaje się pokazywać,
-    // ale w starszych dniach zostaje (razem z punktami, które tam zdobyłeś).
     fun endTaskFromSelectedDate(task: TaskEntity) {
         viewModelScope.launch {
             val end = periodStart(selectedDate, task.period)
             val start = periodStart(LocalDate.parse(task.date), task.period)
             if (end <= start) {
-                // Jeśli "kończymy" je w dniu, w którym zaczęło (albo wcześniej),
-                // to nie zostałoby nigdzie – więc po prostu je usuwamy.
                 dao.delete(task)
             } else {
                 dao.update(task.copy(endDate = end.toString()))
@@ -181,9 +176,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Przycisk "Cofnij": wkładamy do bazy starą wersję zadania (sprzed usunięcia).
-    // Dzięki REPLACE w DAO działa to w obu przypadkach – i gdy zadanie zostało usunięte,
-    // i gdy tylko dostało datę końca.
+    // Przycisk cofnij wkładamy do bazy starą wersję zadania
     fun restoreTask(task: TaskEntity) {
         viewModelScope.launch {
             dao.insert(task)

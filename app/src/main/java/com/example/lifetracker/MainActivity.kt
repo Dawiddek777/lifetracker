@@ -72,10 +72,10 @@ fun MainScreen() {
                                 // Nie układamy ekranów jeden na drugim w nieskończoność –
                                 // przy każdym kliknięciu "cofamy się" do Planera i dopiero otwieramy nową zakładkę.
                                 popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true // zapamiętaj, jak wyglądał zostawiany ekran
+                                    saveState = true
                                 }
-                                launchSingleTop = true // klik w tę samą zakładkę nie otwiera jej drugi raz
-                                restoreState = true // wracając na zakładkę, przywróć jej poprzedni wygląd
+                                launchSingleTop = true
+                                restoreState = true
                             }
                         },
                         icon = { Icon(tab.icon, contentDescription = tab.label) },
@@ -96,19 +96,19 @@ fun MainScreen() {
             composable("trening") {
                 PlaceholderScreen(
                     Icons.Default.FitnessCenter, "Trening",
-                    "Moduł treningowy"
+                    ""
                 )
             }
             composable("dieta") {
                 PlaceholderScreen(
                     Icons.Default.Restaurant, "Dieta",
-                    "Moduł diety i nawodnienia"
+                    ""
                 )
             }
             composable("statystyki") {
                 PlaceholderScreen(
                     Icons.Default.BarChart, "Statystyki",
-                    "Statystyki i system passy (Streaks)"
+                    ""
                 )
             }
         }

@@ -755,7 +755,7 @@ fun TaskDialog(
                     singleLine = true
                 )
 
-                // Godzinę wybieramy tylko przy zadaniach dziennych (cel na cały miesiąc nie ma godziny).
+                // Godzinę wybieramy tylko przy zadaniach dziennych
                 if (period == "DZIEN") {
                     OutlinedButton(
                         onClick = { showTimeInput = true },
@@ -783,8 +783,6 @@ fun TaskDialog(
                             onClick = {
                                 category = cat.name
                                 // Po wybraniu kategorii wpisujemy jej domyślne punkty
-                                // (np. Trening = 20). Jeśli kategoria ich nie ma – czyścimy pole.
-                                // Użytkownik i tak może potem wpisać własną liczbę.
                                 pointsText = cat.defaultPoints?.toString() ?: ""
                             },
                             // Przytrzymanie działa tylko na własnych kategoriach (tych z bazy).
@@ -793,23 +791,16 @@ fun TaskDialog(
                             } else null
                         )
                     }
-                    // Ostatni chip: dodawanie nowej kategorii.
+                    // dodawanie nowej kategorii
                     AssistChip(
                         onClick = { showAddCategory = true },
                         label = { Text("Dodaj kategorię") },
                         leadingIcon = { Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp)) }
                     )
                 }
-                // Podpowiedź pokazujemy tylko, gdy są jakieś własne kategorie.
-                if (categoryList.any { it.entity != null }) {
-                    Text(
-                        text = "Przytrzymaj własną kategorię, aby ją usunąć",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
 
-                // Pole na punkty – tylko cyfry, maksymalnie 4 (czyli do 9999 pkt).
+
+                // Pole na punkty
                 OutlinedTextField(
                     value = pointsText,
                     onValueChange = { newValue ->
@@ -819,10 +810,10 @@ fun TaskDialog(
                     },
                     label = { Text("Punkty") },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) // klawiatura z cyframi
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
-                // Przełącznik "Powtarzaj".
+                // Przełącznik powtarzaj
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Repeat, contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
@@ -858,7 +849,7 @@ fun TaskDialog(
             TextButton(
                 onClick = {
                     if (points != null) {
-                        // Dni zapisujemy jako tekst, np. "1,3,5". Dla celów i zadań bez powtarzania – pusty.
+                        // Dni zapisujemy jako tekst
                         val daysText = if (isRepeating && period == "DZIEN")
                             selectedDays.sorted().joinToString(",")
                         else
@@ -876,16 +867,16 @@ fun TaskDialog(
         }
     )
 
-    // ----- Okienka otwierane z wnętrza tego okienka (pokazują się nad nim) -----
+    // Okienka otwierane z wnętrza tego okienka
 
-    // Wpisywanie godziny cyframi: dwa pola, godzina i minuty.
+    // Wpisywanie godziny cyframi
     if (showTimeInput) {
-        // Startujemy od godziny już ustawionej w zadaniu, a jak jej nie ma – od aktualnej godziny.
+        // Startujemy od godziny już ustawionej w zadaniu albo od aktualnej godziny
         val now = LocalTime.now()
         val timeState = rememberTimePickerState(
             initialHour = time.substringBefore(":").toIntOrNull() ?: now.hour,
             initialMinute = time.substringAfter(":", "").toIntOrNull() ?: now.minute,
-            is24Hour = true // format 24-godzinny, bez AM/PM
+            is24Hour = true
         )
         AlertDialog(
             onDismissRequest = { showTimeInput = false },
@@ -894,7 +885,6 @@ fun TaskDialog(
             text = { TimeInput(state = timeState) },
             confirmButton = {
                 TextButton(onClick = {
-                    // %02d dokleja zero z przodu, żeby było "09:05", a nie "9:5".
                     time = "%02d:%02d".format(timeState.hour, timeState.minute)
                     showTimeInput = false
                 }) { Text("OK") }
@@ -905,14 +895,14 @@ fun TaskDialog(
         )
     }
 
-    // Dodawanie własnej kategorii.
+    // Dodawanie własnej kategorii
     if (showAddCategory) {
         AddCategoryDialog(
             existingNames = categoryList.map { it.name },
             onDismiss = { showAddCategory = false },
             onSave = { name, color ->
                 onAddCategory(name, color)
-                // Od razu zaznaczamy nową kategorię. Nie ma ona domyślnych punktów, więc czyścimy pole.
+                // Od razu zaznaczamy nową kategorięi punkty czyścimy pole.
                 category = name.trim()
                 pointsText = ""
                 showAddCategory = false
@@ -920,17 +910,16 @@ fun TaskDialog(
         )
     }
 
-    // Pytanie przed usunięciem własnej kategorii.
+    // Pytanie przed usunięciem własnej kategorii
     categoryToDelete?.let { cat ->
         AlertDialog(
             onDismissRequest = { categoryToDelete = null },
             icon = { Icon(Icons.Default.Delete, contentDescription = null) },
             title = { Text("Usunąć kategorię „${cat.name}”?") },
-            text = { Text("Zadania z tą kategorią zostaną, ale będą wyświetlane na szaro.") },
             confirmButton = {
                 TextButton(onClick = {
                     cat.entity?.let { onDeleteCategory(it) }
-                    // Jeśli właśnie ta kategoria była zaznaczona – wracamy do "Ogólne".
+                    // Jeśli właśnie ta kategoria była zaznaczona  wracamy do Ogólne
                     if (category == cat.name) {
                         category = firstCategory.name
                         pointsText = firstCategory.defaultPoints?.toString() ?: ""
@@ -945,9 +934,7 @@ fun TaskDialog(
     }
 }
 
-// Chip (plakietka do kliknięcia) z jedną kategorią.
-// Robimy go sami zamiast gotowego FilterChip, bo gotowy nie obsługuje przytrzymania palcem.
-// combinedClickable = obsługuje zwykłe kliknięcie (onClick) i przytrzymanie (onLongClick).
+// combinedClickable obsługuje zwykłe kliknięcie (onClick) i przytrzymanie (onLongClick).
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryChip(
@@ -980,7 +967,7 @@ fun CategoryChip(
 }
 
 // Okienko "Nowa kategoria": nazwa + wybór koloru.
-// existingNames – nazwy, które już są (żeby nie dało się dodać dwóch "Hobby").
+// existingNames – nazwy, które już są.
 @Composable
 fun AddCategoryDialog(
     existingNames: List<String>,
@@ -990,7 +977,6 @@ fun AddCategoryDialog(
     var name by remember { mutableStateOf("") }
     var color by remember { mutableStateOf(categoryColors[0]) }
 
-    // Czy taka nazwa już istnieje? ignoreCase = true -> "hobby" i "Hobby" to to samo.
     val nameTaken = existingNames.any { it.equals(name.trim(), ignoreCase = true) }
 
     AlertDialog(
@@ -1000,14 +986,13 @@ fun AddCategoryDialog(
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { if (it.length <= 20) name = it }, // max 20 znaków
+                    onValueChange = { if (it.length <= 20) name = it }, // max 20
                     label = { Text("Nazwa") },
                     singleLine = true,
                     isError = nameTaken, // czerwona ramka, gdy nazwa jest zajęta
                     supportingText = { if (nameTaken) Text("Taka kategoria już istnieje") }
                 )
                 Text("Kolor:", style = MaterialTheme.typography.labelLarge)
-                // Kółka z kolorami. Wybrane ma grubą ramkę.
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -1033,7 +1018,7 @@ fun AddCategoryDialog(
         confirmButton = {
             TextButton(
                 onClick = { onSave(name.trim(), color) },
-                enabled = name.isNotBlank() && !nameTaken // nazwa wymagana i nie może się powtarzać
+                enabled = name.isNotBlank() && !nameTaken
             ) { Text("Dodaj") }
         },
         dismissButton = {
@@ -1042,7 +1027,7 @@ fun AddCategoryDialog(
     )
 }
 
-// Siedem kółek z dniami tygodnia: Pn Wt Śr Cz Pt So Nd. Zaznaczone są pomarańczowe.
+// Siedem kółek z dniami tygodni zaznaczone są pomarańczowe
 @Composable
 fun WeekDayPicker(selected: Set<Int>, onToggle: (Int) -> Unit) {
     Row(
@@ -1051,8 +1036,6 @@ fun WeekDayPicker(selected: Set<Int>, onToggle: (Int) -> Unit) {
     ) {
         weekDays.forEach { (number, label) ->
             val isOn = number in selected
-            // weight(1f) – każde kółko dostaje tyle samo miejsca, więc 7 kółek zawsze się mieści.
-            // aspectRatio(1f) – szerokość = wysokość, czyli wychodzi koło, a nie owal.
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -1076,9 +1059,7 @@ fun WeekDayPicker(selected: Set<Int>, onToggle: (Int) -> Unit) {
     }
 }
 
-// ====================================================================
-//  PYTANIE PRZY USUWANIU ZADANIA POWTARZALNEGO
-// ====================================================================
+//  PYTANIE PRZY USUWANIU ZADANIA PWTARZALNEGO
 @Composable
 fun DeleteRepeatingDialog(
     task: TaskEntity,
@@ -1086,7 +1067,7 @@ fun DeleteRepeatingDialog(
     onDeleteFromHere: () -> Unit,
     onDeleteEverywhere: () -> Unit
 ) {
-    val fromHere = thisPeriodText(task.period) // "tego dnia", "tego tygodnia"...
+    val fromHere = thisPeriodText(task.period)
     AlertDialog(
         onDismissRequest = onDismiss,
         icon = { Icon(Icons.Default.Delete, contentDescription = null) },
@@ -1094,11 +1075,11 @@ fun DeleteRepeatingDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("To zadanie się powtarza. Co chcesz zrobić?")
-                // Opcja 1: zadanie zostaje w przeszłości (z punktami), znika od oglądanego dnia w przód.
+
                 OutlinedButton(onClick = onDeleteFromHere, modifier = Modifier.fillMaxWidth()) {
                     Text("Usuń od $fromHere")
                 }
-                // Opcja 2: zadanie znika wszędzie, także z historii.
+
                 OutlinedButton(onClick = onDeleteEverywhere, modifier = Modifier.fillMaxWidth()) {
                     Text("Usuń wszędzie (też z historii)")
                 }
