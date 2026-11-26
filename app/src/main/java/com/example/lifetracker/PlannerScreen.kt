@@ -93,11 +93,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneOffset
-
-// ====================================================================
 //  GŁÓWNY EKRAN PLANERA
-// ====================================================================
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlannerScreen(viewModel: TaskViewModel = viewModel()) {
 

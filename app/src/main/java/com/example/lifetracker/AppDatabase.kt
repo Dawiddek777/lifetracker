@@ -7,12 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-// Główna klasa bazy danych. Mówimy tu Roomowi, jakie mamy tabele:
-// zadania (TaskEntity) i własne kategorie (CategoryEntity).
-// version = 4 to numer wersji bazy. Za każdym razem, gdy zmieniamy tabele,
-// trzeba ten numer podbić o 1 – inaczej aplikacja się wysypie.
-// Historia: 1 – pierwsze zadania, 2 – data/kategoria/okres, 3 – zadania powtarzalne,
-//           4 – tabela z własnymi kategoriami.
+// Historia 1 – pierwsze zadania, 2 – data/kategoria/okres, 3 – zadania powtarzalne, 4 – tabela z własnymi kategoriami.
 @Database(entities = [TaskEntity::class, CategoryEntity::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -21,8 +16,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
 
     companion object {
-        // Tu trzymamy jedną, jedyną bazę dla całej aplikacji (tzw. Singleton).
-        // Nie chcemy otwierać pliku bazy kilka razy naraz – to byłby bałagan.
         // @Volatile: gdy jeden wątek ustawi bazę, inne od razu to zobaczą.
         @Volatile
         private var INSTANCE: AppDatabase? = null
